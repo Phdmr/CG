@@ -169,11 +169,6 @@ def polilinhas(data, pontos=None):
     return data
 
 
-def preenchimento(data, vet=None):
-    data = desenhaPoligono(data)
-    return data
-
-
 def desenhaPoligono(data, pontos=None):
     if pontos is None:
         pontos = []
@@ -217,13 +212,44 @@ def recortePoligono(data):
     return data
 
 
+def bezier(data):
+    p1 = perguntarPonto('p1')
+    p2 = perguntarPonto('p2')
+    bufferPontos = []
+    p = {'x': 0, 'y': 0}
+
+    for t in range(0, 1, 0.001):
+        p = pontoCast(points.Count-1, 0, t)
+        bufferPontos.append(p)
+
+    for i in bufferPontos:
+        if i == p1 or i == p2:
+            cor = r
+        else:
+            cor = b
+        data = desenhaPonto(data, i, cor)
+
+    return data
+
+
+def pontoCast(r, i, t):
+    if r == 0:
+        return bufferPontos[i]
+    p1 = pontoCast(r-1, i, t)
+    p2 = pontoCast(r-1, i + 1, t)
+    x = (1 - t) * p1['x'] + t * p2['x']
+    y = (1 - t) * p1['y'] + t * p2['y']
+    p = {'x': x, 'y': y}
+    return p
+
+
 def main():
     tabuleiro = iniciarTabuleiro()
     opcao = 99
     while True:
         print('1 - Bresenham')
         print('2 - Polilinhas')
-        print('3 - Preenchimento')
+        print('3 - Curva de Bézier')
         print('4 - Recorte de Linha')
         print('5 - Recorte de poligono')
         print('0 - Sair')
@@ -246,7 +272,7 @@ def main():
             mostrarTabuleiro(tabuleiro)
             tabuleiro = limpaTabuleiro(tabuleiro)
         if opcao == 3:
-            tabuleiro = preenchimento(tabuleiro)
+            tabuleiro = bezier(tabuleiro)
             mostrarTabuleiro(tabuleiro)
             tabuleiro = limpaTabuleiro(tabuleiro)
         if opcao == 4:
