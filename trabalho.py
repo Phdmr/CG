@@ -8,7 +8,6 @@ w = pygame.Color("white")
 r = pygame.Color("red")
 altura = 20
 largura = 20
-bufferPontos = []
 
 
 # Cria tabuleiro
@@ -216,6 +215,7 @@ def recortePoligono(data):
 
 
 # Inicio Bezier
+# Disponível em: https://towardsdatascience.com/b%C3%A9zier-interpolation-8033e9a262c2
 # find the a & b points
 def get_bezier_coef(points):
     # since the formulas work given that we have n+1 points
@@ -275,6 +275,48 @@ def bezier(data):
     return data
 
 
+def perspectiva(data):
+    pts = []
+    npontos = int(input('Quantos pontos deseja inserir: '))
+    for i in range(npontos):
+        pts.append(perguntarPonto(i + 1))
+    p = pts
+    data = desenhaPoligono(data, p)
+    mostrarTabuleiro(data)
+    pontos2 = []
+    for i in range(len(pts) - 1):
+        if pts[i]['x'] < 0:
+            x = -pts[i]['x']
+            pts[i]['x'] = -pts[i]['x']
+        else:
+            x = pts[i]['x']
+        if pts[i]['y'] < 0:
+            y = -pts[i]['y']
+            pts[i]['y'] = -pts[i]['y']
+        else:
+            y = pts[i]['y']
+        pontos2.append({'x': x + 3, 'y': y + 3})
+
+    for i in range(2, len(pontos2)):
+        data = bresenham(data, pts[i], pontos2[i])
+
+    pontos3 = []
+    for i in range(len(pts) - 1):
+        if pts[i]['x'] < 0:
+            x = -pts[i]['x']
+        else:
+            x = pts[i]['x']
+        if pts[i]['y'] < 0:
+            y = -pts[i]['y']
+        else:
+            y = pts[i]['y']
+        pontos3.append({'x': x + 2, 'y': y + 2})
+
+    for i in range(1, len(pontos2)):
+        data = bresenham(data, pontos2[i - 1], pontos2[i])
+
+    return data
+
 def main():
     tabuleiro = iniciarTabuleiro()
     opcao = 99
@@ -284,6 +326,7 @@ def main():
         print('3 - Curva de Bézier')
         print('4 - Recorte de Linha')
         print('5 - Recorte de poligono')
+        print('6 - Perspectiva')
         print('0 - Sair')
         opcao = int(input('Opção desejada: '))
         if opcao == 1:
@@ -317,6 +360,10 @@ def main():
             tabuleiro = desenhaPoligono(tabuleiro)
             mostrarTabuleiro(tabuleiro)
             tabuleiro = recorteLinha(tabuleiro)
+            mostrarTabuleiro(tabuleiro)
+            tabuleiro = limpaTabuleiro(tabuleiro)
+        if opcao == 6:
+            tabuleiro = perspectiva(tabuleiro)
             mostrarTabuleiro(tabuleiro)
             tabuleiro = limpaTabuleiro(tabuleiro)
         elif opcao == 0:
