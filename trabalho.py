@@ -1,4 +1,5 @@
 import pygame
+import matplotlib.pyplot as plt
 import numpy as np
 
 
@@ -264,14 +265,23 @@ def evaluate_bezier(points, n):
 
 
 def bezier(data):
-    points = np.random.rand(2, 2)
+    # generate 5 (or any number that you want) random points that we want to fit (or set them youreself)
+
+    points = np.random.rand(5, 2)
+
+    # fit the points with Bezier interpolation
+    # use 50 points between each consecutive points to draw the curve
     path = evaluate_bezier(points, 50)
+
+    # extract x & y coordinates of points
+    x, y = points[:,0], points[:,1]
     px, py = path[:,0], path[:,1]
-    p = {'x': 0, 'y': 0}
-    for i in range(len(px)):
-        p['x'] = int(px[i] * 10)
-        p['y'] = int(py[i] * 10)
-        data = desenhaPonto(data, p, b)
+
+    # plot
+    plt.figure(figsize=(11, 8))
+    plt.plot(px, py, 'b-')
+    plt.plot(x, y, 'ro')
+    plt.show()
     return data
 
 
