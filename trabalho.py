@@ -337,6 +337,8 @@ def perspectiva(data):
     for i in range(n, len(pontos2)):
         data = bresenham(data, pontos2[i - 1], pontos2[i])
 
+    return data
+
 
 def main():
     tabuleiro = iniciarTabuleiro()
