@@ -294,7 +294,20 @@ def perspectiva(data):
     data = desenhaPoligono(data, p)
     mostrarTabuleiro(data)
     pontos2 = []
-    for i in range(len(pts) - 1):
+    ln = len(pts)
+    subtrair = False
+    cnd = ln % 2
+    if cnd != 0:
+        ln += 1
+        subtrair = True
+    n = ln / 2
+    n -= 1
+    ln -= n
+    if subtrair:
+        ln -= 1
+    ln = int(ln)
+    n = int(n)
+    for i in range(ln):
         if pts[i]['x'] < 0:
             x = -pts[i]['x']
             pts[i]['x'] = -pts[i]['x']
@@ -306,12 +319,11 @@ def perspectiva(data):
         else:
             y = pts[i]['y']
         pontos2.append({'x': x + 3, 'y': y + 3})
-
-    for i in range(2, len(pontos2)):
+    for i in range(n, ln):
         data = bresenham(data, pts[i], pontos2[i])
 
     pontos3 = []
-    for i in range(len(pts) - 1):
+    for i in range(ln):
         if pts[i]['x'] < 0:
             x = -pts[i]['x']
         else:
@@ -322,7 +334,7 @@ def perspectiva(data):
             y = pts[i]['y']
         pontos3.append({'x': x + 2, 'y': y + 2})
 
-    for i in range(1, len(pontos2)):
+    for i in range(n, len(pontos2)):
         data = bresenham(data, pontos2[i - 1], pontos2[i])
 
     return data
